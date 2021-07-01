@@ -1,0 +1,1461 @@
+
+neon_abm.o:     file format elf64-littleaarch64
+
+
+Disassembly of section .text:
+
+0000000000000000 <main>:
+#include <cstdlib>
+using namespace std;
+void add_float_neon3(signed short *dst, signed char *src1, signed char *src2, int count);
+void test1(signed short *a, signed short *b);
+int main()
+{
+   0:	a9bd7bfd 	stp	x29, x30, [sp, #-48]!
+   4:	910003fd 	mov	x29, sp
+   8:	90000000 	adrp	x0, 0 <__stack_chk_guard>
+   c:	f9400000 	ldr	x0, [x0]
+  10:	f9400001 	ldr	x1, [x0]
+  14:	f90017a1 	str	x1, [x29, #40]
+  18:	d2800001 	mov	x1, #0x0                   	// #0
+	  /*signed char  a[8]={1,2,3,4,5,6,7,8};
+	   *   signed char  b[8]={2,3,4,5,6,7,8,9};
+	   *     signed short  c[8]={0,0,0,0,0,0,0,0};
+	   *       */
+	 signed short a[4]={-254, -509, 772, 1286};
+  1c:	12801fa0 	mov	w0, #0xffffff02            	// #-254
+  20:	790033a0 	strh	w0, [x29, #24]
+  24:	12803f80 	mov	w0, #0xfffffe03            	// #-509
+  28:	790037a0 	strh	w0, [x29, #26]
+  2c:	52806080 	mov	w0, #0x304                 	// #772
+  30:	79003ba0 	strh	w0, [x29, #28]
+  34:	5280a0c0 	mov	w0, #0x506                 	// #1286
+  38:	79003fa0 	strh	w0, [x29, #30]
+	  signed short b[4]={1,1,2,2};
+  3c:	52800020 	mov	w0, #0x1                   	// #1
+  40:	790043a0 	strh	w0, [x29, #32]
+  44:	52800020 	mov	w0, #0x1                   	// #1
+  48:	790047a0 	strh	w0, [x29, #34]
+  4c:	52800040 	mov	w0, #0x2                   	// #2
+  50:	79004ba0 	strh	w0, [x29, #36]
+  54:	52800040 	mov	w0, #0x2                   	// #2
+  58:	79004fa0 	strh	w0, [x29, #38]
+	    /*add_float_neon3(c, a, b, 8);
+	     *   for(unsigned int i=0; i<8; i++)
+	     *     {
+	     *         std::cout<<(int)c[i]<<' ';
+	     *           }*/
+	    test1(a, b);
+  5c:	910083a1 	add	x1, x29, #0x20
+  60:	910063a0 	add	x0, x29, #0x18
+  64:	94000000 	bl	13c <_Z5test1PsS_>
+	      for(unsigned int i=0;i<4;i++)
+  68:	b90017bf 	str	wzr, [x29, #20]
+  6c:	b94017a0 	ldr	w0, [x29, #20]
+  70:	71000c1f 	cmp	w0, #0x3
+  74:	540001e8 	b.hi	b0 <main+0xb0>  // b.pmore
+		        {
+				    std::cout<<(int)b[i]<<' ';
+  78:	b94017a0 	ldr	w0, [x29, #20]
+  7c:	d37ff800 	lsl	x0, x0, #1
+  80:	910083a1 	add	x1, x29, #0x20
+  84:	78e06820 	ldrsh	w0, [x1, x0]
+  88:	2a0003e1 	mov	w1, w0
+  8c:	90000000 	adrp	x0, 0 <_ZSt4cout>
+  90:	f9400000 	ldr	x0, [x0]
+  94:	94000000 	bl	0 <_ZNSolsEi>
+  98:	52800401 	mov	w1, #0x20                  	// #32
+  9c:	94000000 	bl	0 <_ZStlsISt11char_traitsIcEERSt13basic_ostreamIcT_ES5_c>
+	      for(unsigned int i=0;i<4;i++)
+  a0:	b94017a0 	ldr	w0, [x29, #20]
+  a4:	11000400 	add	w0, w0, #0x1
+  a8:	b90017a0 	str	w0, [x29, #20]
+  ac:	17fffff0 	b	6c <main+0x6c>
+				      }
+	        return 0;
+  b0:	52800000 	mov	w0, #0x0                   	// #0
+}
+  b4:	90000001 	adrp	x1, 0 <__stack_chk_guard>
+  b8:	f9400021 	ldr	x1, [x1]
+  bc:	f94017a2 	ldr	x2, [x29, #40]
+  c0:	f9400021 	ldr	x1, [x1]
+  c4:	ca010041 	eor	x1, x2, x1
+  c8:	f100003f 	cmp	x1, #0x0
+  cc:	54000040 	b.eq	d4 <main+0xd4>  // b.none
+  d0:	94000000 	bl	0 <__stack_chk_fail>
+  d4:	a8c37bfd 	ldp	x29, x30, [sp], #48
+  d8:	d65f03c0 	ret
+
+00000000000000dc <_Z15add_float_neon3PsPaS0_i>:
+void add_float_neon3(signed short* dst, signed char* src1, signed char* src2, int count)
+{
+  dc:	d10083ff 	sub	sp, sp, #0x20
+  e0:	f9000fe0 	str	x0, [sp, #24]
+  e4:	f9000be1 	str	x1, [sp, #16]
+  e8:	f90007e2 	str	x2, [sp, #8]
+  ec:	b90007e3 	str	w3, [sp, #4]
+																						               "st1    {v4.8h}, [%[dst]], #16          \n"
+																							                      "bgt    1b                             \n"
+																									                     : [dst] "+r" (dst)
+																											                    : [src1] "r" (src1), [src2] "r" (src2), [count] "r" (count)
+																													                   : "memory", "v0", "v1", "v2", "v3", "v4", "w1"
+																															             );
+  f0:	f9400be2 	ldr	x2, [sp, #16]
+  f4:	f94007e3 	ldr	x3, [sp, #8]
+  f8:	b94007e4 	ldr	w4, [sp, #4]
+  fc:	f9400fe0 	ldr	x0, [sp, #24]
+ 100:	52800141 	mov	w1, #0xa                   	// #10
+ 104:	4e020c24 	dup	v4.8h, w1
+ 108:	0cdf7040 	ld1	{v0.8b}, [x2], #8
+ 10c:	0cdf7061 	ld1	{v1.8b}, [x3], #8
+ 110:	0f08a402 	sxtl	v2.8h, v0.8b
+ 114:	0f08a423 	sxtl	v3.8h, v1.8b
+ 118:	4e628463 	add	v3.8h, v3.8h, v2.8h
+ 11c:	4e638484 	add	v4.8h, v4.8h, v3.8h
+ 120:	f1002084 	subs	x4, x4, #0x8
+ 124:	4c9f7404 	st1	{v4.8h}, [x0], #16
+ 128:	54fffeec 	b.gt	104 <_Z15add_float_neon3PsPaS0_i+0x28>
+ 12c:	f9000fe0 	str	x0, [sp, #24]
+
+}
+ 130:	d503201f 	nop
+ 134:	910083ff 	add	sp, sp, #0x20
+ 138:	d65f03c0 	ret
+
+000000000000013c <_Z5test1PsS_>:
+void test1(signed short *a, signed short *b)
+{
+ 13c:	d10043ff 	sub	sp, sp, #0x10
+ 140:	f90007e0 	str	x0, [sp, #8]
+ 144:	f90003e1 	str	x1, [sp]
+																															  *                                                                                                                                                           "strh w3, [%[dst]], #2  \n"
+																															  *                                                                                                                                                                             */
+																													                 : [dst] "+r" (b)
+																															                : [src] "r" (a)
+																																	                  : "memory", "w1", "x2", "w3", "w4", "w5", "x7", "x8"
+																																				            );
+ 148:	f94007e6 	ldr	x6, [sp, #8]
+ 14c:	f94003e0 	ldr	x0, [sp]
+ 150:	d2800082 	mov	x2, #0x4                   	// #4
+ 154:	784024c3 	ldrh	w3, [x6], #2
+ 158:	2a0303e4 	mov	w4, w3
+ 15c:	12181c65 	and	w5, w3, #0xff00
+ 160:	13087ca5 	asr	w5, w5, #8
+ 164:	12001c84 	and	w4, w4, #0xff
+ 168:	52800064 	mov	w4, #0x3                   	// #3
+ 16c:	110000a5 	add	w5, w5, #0x0
+ 170:	71000484 	subs	w4, w4, #0x1
+ 174:	54ffffc1 	b.ne	16c <_Z5test1PsS_+0x30>  // b.any
+ 178:	78002405 	strh	w5, [x0], #2
+ 17c:	f1000442 	subs	x2, x2, #0x1
+ 180:	54fffea1 	b.ne	154 <_Z5test1PsS_+0x18>  // b.any
+ 184:	f90003e0 	str	x0, [sp]
+
+}
+ 188:	d503201f 	nop
+ 18c:	910043ff 	add	sp, sp, #0x10
+ 190:	d65f03c0 	ret
+
+0000000000000194 <_Z41__static_initialization_and_destruction_0ii>:
+ 194:	a9bc7bfd 	stp	x29, x30, [sp, #-64]!
+ 198:	910003fd 	mov	x29, sp
+ 19c:	f9000bf3 	str	x19, [sp, #16]
+ 1a0:	b9002fa0 	str	w0, [x29, #44]
+ 1a4:	b9002ba1 	str	w1, [x29, #40]
+ 1a8:	90000000 	adrp	x0, 0 <__stack_chk_guard>
+ 1ac:	f9400000 	ldr	x0, [x0]
+ 1b0:	f9400001 	ldr	x1, [x0]
+ 1b4:	f9001fa1 	str	x1, [x29, #56]
+ 1b8:	d2800001 	mov	x1, #0x0                   	// #0
+ 1bc:	b9402fa0 	ldr	w0, [x29, #44]
+ 1c0:	7100041f 	cmp	w0, #0x1
+ 1c4:	54000fc1 	b.ne	3bc <_Z41__static_initialization_and_destruction_0ii+0x228>  // b.any
+ 1c8:	b9402ba1 	ldr	w1, [x29, #40]
+ 1cc:	529fffe0 	mov	w0, #0xffff                	// #65535
+ 1d0:	6b00003f 	cmp	w1, w0
+ 1d4:	54000f41 	b.ne	3bc <_Z41__static_initialization_and_destruction_0ii+0x228>  // b.any
+  extern wostream wclog;	/// Linked to standard error (buffered)
+#endif
+  //@}
+
+  // For construction of filebuffers for cout, cin, cerr, clog et. al.
+  static ios_base::Init __ioinit;
+ 1d8:	90000000 	adrp	x0, 0 <main>
+ 1dc:	91000000 	add	x0, x0, #0x0
+ 1e0:	94000000 	bl	0 <_ZNSt8ios_base4InitC1Ev>
+ 1e4:	90000000 	adrp	x0, 0 <__dso_handle>
+ 1e8:	91000002 	add	x2, x0, #0x0
+ 1ec:	90000000 	adrp	x0, 0 <main>
+ 1f0:	91000001 	add	x1, x0, #0x0
+ 1f4:	90000000 	adrp	x0, 0 <_ZNSt8ios_base4InitD1Ev>
+ 1f8:	f9400000 	ldr	x0, [x0]
+ 1fc:	94000000 	bl	0 <__cxa_atexit>
+    }
+#endif // defined(CL_HPP_USE_CL_DEVICE_FISSION)
+};
+
+CL_HPP_DEFINE_STATIC_MEMBER_ std::once_flag Device::default_initialized_;
+CL_HPP_DEFINE_STATIC_MEMBER_ Device Device::default_;
+ 200:	90000000 	adrp	x0, 68 <main+0x68>
+ 204:	91000000 	add	x0, x0, #0x0
+ 208:	f9400000 	ldr	x0, [x0]
+ 20c:	92400000 	and	x0, x0, #0x1
+ 210:	f100001f 	cmp	x0, #0x0
+ 214:	540001e1 	b.ne	250 <_Z41__static_initialization_and_destruction_0ii+0xbc>  // b.any
+ 218:	90000000 	adrp	x0, 68 <main+0x68>
+ 21c:	91000000 	add	x0, x0, #0x0
+ 220:	d2800021 	mov	x1, #0x1                   	// #1
+ 224:	f9000001 	str	x1, [x0]
+ 228:	90000000 	adrp	x0, 8 <main+0x8>
+ 22c:	91000000 	add	x0, x0, #0x0
+ 230:	94000000 	bl	0 <main>
+ 234:	90000000 	adrp	x0, 0 <__dso_handle>
+ 238:	91000002 	add	x2, x0, #0x0
+ 23c:	90000000 	adrp	x0, 8 <main+0x8>
+ 240:	91000001 	add	x1, x0, #0x0
+ 244:	90000000 	adrp	x0, 0 <main>
+ 248:	91000000 	add	x0, x0, #0x0
+ 24c:	94000000 	bl	0 <__cxa_atexit>
+    }
+#endif // CL_HPP_TARGET_OPENCL_VERSION >= 120
+}; // class Platform
+
+CL_HPP_DEFINE_STATIC_MEMBER_ std::once_flag Platform::default_initialized_;
+CL_HPP_DEFINE_STATIC_MEMBER_ Platform Platform::default_;
+ 250:	90000000 	adrp	x0, 70 <main+0x70>
+ 254:	91000000 	add	x0, x0, #0x0
+ 258:	f9400000 	ldr	x0, [x0]
+ 25c:	92400000 	and	x0, x0, #0x1
+ 260:	f100001f 	cmp	x0, #0x0
+ 264:	540001e1 	b.ne	2a0 <_Z41__static_initialization_and_destruction_0ii+0x10c>  // b.any
+ 268:	90000000 	adrp	x0, 70 <main+0x70>
+ 26c:	91000000 	add	x0, x0, #0x0
+ 270:	d2800021 	mov	x1, #0x1                   	// #1
+ 274:	f9000001 	str	x1, [x0]
+ 278:	90000000 	adrp	x0, 28 <main+0x28>
+ 27c:	91000000 	add	x0, x0, #0x0
+ 280:	94000000 	bl	0 <main>
+ 284:	90000000 	adrp	x0, 0 <__dso_handle>
+ 288:	91000002 	add	x2, x0, #0x0
+ 28c:	90000000 	adrp	x0, 28 <main+0x28>
+ 290:	91000001 	add	x1, x0, #0x0
+ 294:	90000000 	adrp	x0, 0 <main>
+ 298:	91000000 	add	x0, x0, #0x0
+ 29c:	94000000 	bl	0 <__cxa_atexit>
+    }
+#endif
+}
+
+CL_HPP_DEFINE_STATIC_MEMBER_ std::once_flag Context::default_initialized_;
+CL_HPP_DEFINE_STATIC_MEMBER_ Context Context::default_;
+ 2a0:	90000000 	adrp	x0, 78 <main+0x78>
+ 2a4:	91000000 	add	x0, x0, #0x0
+ 2a8:	f9400000 	ldr	x0, [x0]
+ 2ac:	92400000 	and	x0, x0, #0x1
+ 2b0:	f100001f 	cmp	x0, #0x0
+ 2b4:	540001e1 	b.ne	2f0 <_Z41__static_initialization_and_destruction_0ii+0x15c>  // b.any
+ 2b8:	90000000 	adrp	x0, 78 <main+0x78>
+ 2bc:	91000000 	add	x0, x0, #0x0
+ 2c0:	d2800021 	mov	x1, #0x1                   	// #1
+ 2c4:	f9000001 	str	x1, [x0]
+ 2c8:	90000000 	adrp	x0, 40 <main+0x40>
+ 2cc:	91000000 	add	x0, x0, #0x0
+ 2d0:	94000000 	bl	0 <main>
+ 2d4:	90000000 	adrp	x0, 0 <__dso_handle>
+ 2d8:	91000002 	add	x2, x0, #0x0
+ 2dc:	90000000 	adrp	x0, 40 <main+0x40>
+ 2e0:	91000001 	add	x1, x0, #0x0
+ 2e4:	90000000 	adrp	x0, 0 <main>
+ 2e8:	91000000 	add	x0, x0, #0x0
+ 2ec:	94000000 	bl	0 <__cxa_atexit>
+        return sizes_;
+    }
+};
+
+//! \brief A zero-dimensional range.
+static const NDRange NullRange;
+ 2f0:	90000000 	adrp	x0, 0 <main>
+ 2f4:	91000000 	add	x0, x0, #0x0
+ 2f8:	94000000 	bl	0 <main>
+        return detail::errHandler(::clFinish(object_), __FINISH_ERR);
+    }
+}; // CommandQueue
+
+CL_HPP_DEFINE_STATIC_MEMBER_ std::once_flag CommandQueue::default_initialized_;
+CL_HPP_DEFINE_STATIC_MEMBER_ CommandQueue CommandQueue::default_;
+ 2fc:	90000000 	adrp	x0, 80 <main+0x80>
+ 300:	91000000 	add	x0, x0, #0x0
+ 304:	f9400000 	ldr	x0, [x0]
+ 308:	92400000 	and	x0, x0, #0x1
+ 30c:	f100001f 	cmp	x0, #0x0
+ 310:	540001e1 	b.ne	34c <_Z41__static_initialization_and_destruction_0ii+0x1b8>  // b.any
+ 314:	90000000 	adrp	x0, 80 <main+0x80>
+ 318:	91000000 	add	x0, x0, #0x0
+ 31c:	d2800021 	mov	x1, #0x1                   	// #1
+ 320:	f9000001 	str	x1, [x0]
+ 324:	90000000 	adrp	x0, 58 <main+0x58>
+ 328:	91000000 	add	x0, x0, #0x0
+ 32c:	94000000 	bl	0 <main>
+ 330:	90000000 	adrp	x0, 0 <__dso_handle>
+ 334:	91000002 	add	x2, x0, #0x0
+ 338:	90000000 	adrp	x0, 58 <main+0x58>
+ 33c:	91000001 	add	x1, x0, #0x0
+ 340:	90000000 	adrp	x0, 0 <main>
+ 344:	91000000 	add	x0, x0, #0x0
+ 348:	94000000 	bl	0 <__cxa_atexit>
+#include <CL/cl2.hpp>
+#pragma GCC diagnostic pop
+
+namespace cl
+{
+static const NDRange Range_128_1 = NDRange(128, 1);
+ 34c:	90000000 	adrp	x0, 0 <main>
+ 350:	91000000 	add	x0, x0, #0x0
+ 354:	d2800022 	mov	x2, #0x1                   	// #1
+ 358:	d2801001 	mov	x1, #0x80                  	// #128
+ 35c:	94000000 	bl	0 <main>
+#include <string>
+
+namespace arm_compute
+{
+/** Default string for the CLKernel configuration id */
+static const std::string default_config_id = "no_config_id";
+ 360:	9100c3a0 	add	x0, x29, #0x30
+ 364:	94000000 	bl	0 <_ZNSaIcEC1Ev>
+ 368:	9100c3a2 	add	x2, x29, #0x30
+ 36c:	90000000 	adrp	x0, 0 <main>
+ 370:	91000001 	add	x1, x0, #0x0
+ 374:	90000000 	adrp	x0, 0 <main>
+ 378:	91000000 	add	x0, x0, #0x0
+ 37c:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC1EPKcRKS3_>
+ 380:	9100c3a0 	add	x0, x29, #0x30
+ 384:	94000000 	bl	0 <_ZNSaIcED1Ev>
+ 388:	90000000 	adrp	x0, 0 <__dso_handle>
+ 38c:	91000002 	add	x2, x0, #0x0
+ 390:	90000000 	adrp	x0, 0 <main>
+ 394:	91000001 	add	x1, x0, #0x0
+ 398:	90000000 	adrp	x0, 0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+ 39c:	f9400000 	ldr	x0, [x0]
+ 3a0:	94000000 	bl	0 <__cxa_atexit>
+ 3a4:	14000006 	b	3bc <_Z41__static_initialization_and_destruction_0ii+0x228>
+ 3a8:	aa0003f3 	mov	x19, x0
+ 3ac:	9100c3a0 	add	x0, x29, #0x30
+ 3b0:	94000000 	bl	0 <_ZNSaIcED1Ev>
+ 3b4:	aa1303e0 	mov	x0, x19
+ 3b8:	94000000 	bl	0 <_Unwind_Resume>
+ 3bc:	90000000 	adrp	x0, 0 <__stack_chk_guard>
+ 3c0:	f9400000 	ldr	x0, [x0]
+ 3c4:	f9401fa1 	ldr	x1, [x29, #56]
+ 3c8:	f9400000 	ldr	x0, [x0]
+ 3cc:	ca000020 	eor	x0, x1, x0
+ 3d0:	f100001f 	cmp	x0, #0x0
+ 3d4:	54000040 	b.eq	3dc <_Z41__static_initialization_and_destruction_0ii+0x248>  // b.none
+ 3d8:	94000000 	bl	0 <__stack_chk_fail>
+ 3dc:	f9400bf3 	ldr	x19, [sp, #16]
+ 3e0:	a8c47bfd 	ldp	x29, x30, [sp], #64
+ 3e4:	d65f03c0 	ret
+
+00000000000003e8 <_GLOBAL__sub_I_main>:
+ 3e8:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+ 3ec:	910003fd 	mov	x29, sp
+ 3f0:	529fffe1 	mov	w1, #0xffff                	// #65535
+ 3f4:	52800020 	mov	w0, #0x1                   	// #1
+ 3f8:	97ffff67 	bl	194 <_Z41__static_initialization_and_destruction_0ii>
+ 3fc:	a8c17bfd 	ldp	x29, x30, [sp], #16
+ 400:	d65f03c0 	ret
+
+Disassembly of section .text._ZStorSt13_Ios_OpenmodeS_:
+
+0000000000000000 <_ZStorSt13_Ios_OpenmodeS_>:
+  operator&(_Ios_Openmode __a, _Ios_Openmode __b)
+  { return _Ios_Openmode(static_cast<int>(__a) & static_cast<int>(__b)); }
+
+  inline _GLIBCXX_CONSTEXPR _Ios_Openmode
+  operator|(_Ios_Openmode __a, _Ios_Openmode __b)
+  { return _Ios_Openmode(static_cast<int>(__a) | static_cast<int>(__b)); }
+   0:	d10043ff 	sub	sp, sp, #0x10
+   4:	b9000fe0 	str	w0, [sp, #12]
+   8:	b9000be1 	str	w1, [sp, #8]
+   c:	b9400fe1 	ldr	w1, [sp, #12]
+  10:	b9400be0 	ldr	w0, [sp, #8]
+  14:	2a000020 	orr	w0, w1, w0
+  18:	910043ff 	add	sp, sp, #0x10
+  1c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl6detail16ReferenceHandlerIP13_cl_device_idE7releaseES3_:
+
+0000000000000000 <_ZN2cl6detail16ReferenceHandlerIP13_cl_device_idE7releaseES3_>:
+    static cl_int release(cl_device_id)
+   0:	d10043ff 	sub	sp, sp, #0x10
+   4:	f90007e0 	str	x0, [sp, #8]
+    { return CL_SUCCESS; }
+   8:	52800000 	mov	w0, #0x0                   	// #0
+   c:	910043ff 	add	sp, sp, #0x10
+  10:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl6detail16ReferenceHandlerIP15_cl_platform_idE7releaseES3_:
+
+0000000000000000 <_ZN2cl6detail16ReferenceHandlerIP15_cl_platform_idE7releaseES3_>:
+    static cl_int release(cl_platform_id)
+   0:	d10043ff 	sub	sp, sp, #0x10
+   4:	f90007e0 	str	x0, [sp, #8]
+    { return CL_SUCCESS; }
+   8:	52800000 	mov	w0, #0x0                   	// #0
+   c:	910043ff 	add	sp, sp, #0x10
+  10:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl6detail16ReferenceHandlerIP11_cl_contextE7releaseES3_:
+
+0000000000000000 <_ZN2cl6detail16ReferenceHandlerIP11_cl_contextE7releaseES3_>:
+    static cl_int release(cl_context context)
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+    { return ::clReleaseContext(context); }
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	94000000 	bl	0 <clReleaseContext>
+  14:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  18:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl6detail16ReferenceHandlerIP17_cl_command_queueE7releaseES3_:
+
+0000000000000000 <_ZN2cl6detail16ReferenceHandlerIP17_cl_command_queueE7releaseES3_>:
+    static cl_int release(cl_command_queue queue)
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+    { return ::clReleaseCommandQueue(queue); }
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	94000000 	bl	0 <clReleaseCommandQueue>
+  14:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  18:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl6detail7WrapperIP13_cl_device_idEC2Ev:
+
+0000000000000000 <_ZN2cl6detail7WrapperIP13_cl_device_idEC1Ev>:
+    Wrapper() : object_(NULL), referenceCountable_(false) 
+   0:	d10043ff 	sub	sp, sp, #0x10
+   4:	f90007e0 	str	x0, [sp, #8]
+   8:	f94007e0 	ldr	x0, [sp, #8]
+   c:	f900001f 	str	xzr, [x0]
+  10:	f94007e0 	ldr	x0, [sp, #8]
+  14:	3900201f 	strb	wzr, [x0, #8]
+    }
+  18:	d503201f 	nop
+  1c:	910043ff 	add	sp, sp, #0x10
+  20:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl6detail7WrapperIP13_cl_device_idED2Ev:
+
+0000000000000000 <_ZN2cl6detail7WrapperIP13_cl_device_idED1Ev>:
+    ~Wrapper()
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+        release();
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	94000000 	bl	0 <_ZN2cl6detail7WrapperIP13_cl_device_idED1Ev>
+    }
+  14:	d503201f 	nop
+  18:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  1c:	d65f03c0 	ret
+
+Disassembly of section .text._ZNK2cl6detail7WrapperIP13_cl_device_idE7releaseEv:
+
+0000000000000000 <_ZNK2cl6detail7WrapperIP13_cl_device_idE7releaseEv>:
+    cl_int release() const
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+        if (object_ != nullptr && referenceCountable_) {
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	f9400000 	ldr	x0, [x0]
+  14:	f100001f 	cmp	x0, #0x0
+  18:	54000120 	b.eq	3c <_ZNK2cl6detail7WrapperIP13_cl_device_idE7releaseEv+0x3c>  // b.none
+  1c:	f9400fa0 	ldr	x0, [x29, #24]
+  20:	39402000 	ldrb	w0, [x0, #8]
+  24:	7100001f 	cmp	w0, #0x0
+  28:	540000a0 	b.eq	3c <_ZNK2cl6detail7WrapperIP13_cl_device_idE7releaseEv+0x3c>  // b.none
+            return ReferenceHandler<cl_type>::release(object_);
+  2c:	f9400fa0 	ldr	x0, [x29, #24]
+  30:	f9400000 	ldr	x0, [x0]
+  34:	94000000 	bl	0 <_ZNK2cl6detail7WrapperIP13_cl_device_idE7releaseEv>
+  38:	14000002 	b	40 <_ZNK2cl6detail7WrapperIP13_cl_device_idE7releaseEv+0x40>
+            return CL_SUCCESS;
+  3c:	52800000 	mov	w0, #0x0                   	// #0
+    }
+  40:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  44:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl6DeviceC2Ev:
+
+0000000000000000 <_ZN2cl6DeviceC1Ev>:
+    Device() : detail::Wrapper<cl_type>() { }
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	94000000 	bl	0 <_ZN2cl6DeviceC1Ev>
+  14:	d503201f 	nop
+  18:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  1c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl6DeviceD2Ev:
+
+0000000000000000 <_ZN2cl6DeviceD1Ev>:
+class Device : public detail::Wrapper<cl_device_id>
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	94000000 	bl	0 <_ZN2cl6DeviceD1Ev>
+  14:	d503201f 	nop
+  18:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  1c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl8PlatformD2Ev:
+
+0000000000000000 <_ZN2cl8PlatformD1Ev>:
+class Platform : public detail::Wrapper<cl_platform_id>
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	94000000 	bl	0 <_ZN2cl8PlatformD1Ev>
+  14:	d503201f 	nop
+  18:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  1c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl8PlatformC2Ev:
+
+0000000000000000 <_ZN2cl8PlatformC1Ev>:
+    Platform() : detail::Wrapper<cl_type>()  { }
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	94000000 	bl	0 <_ZN2cl8PlatformC1Ev>
+  14:	d503201f 	nop
+  18:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  1c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl7ContextD2Ev:
+
+0000000000000000 <_ZN2cl7ContextD1Ev>:
+class Context 
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	94000000 	bl	0 <_ZN2cl7ContextD1Ev>
+  14:	d503201f 	nop
+  18:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  1c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl7ContextC2Ev:
+
+0000000000000000 <_ZN2cl7ContextC1Ev>:
+    Context() : detail::Wrapper<cl_type>() { }
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	94000000 	bl	0 <_ZN2cl7ContextC1Ev>
+  14:	d503201f 	nop
+  18:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  1c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl7NDRangeC2Ev:
+
+0000000000000000 <_ZN2cl7NDRangeC1Ev>:
+    NDRange()
+   0:	d10043ff 	sub	sp, sp, #0x10
+   4:	f90007e0 	str	x0, [sp, #8]
+        : dimensions_(0)
+   8:	f94007e0 	ldr	x0, [sp, #8]
+   c:	b900181f 	str	wzr, [x0, #24]
+        sizes_[0] = 0;
+  10:	f94007e0 	ldr	x0, [sp, #8]
+  14:	f900001f 	str	xzr, [x0]
+        sizes_[1] = 0;
+  18:	f94007e0 	ldr	x0, [sp, #8]
+  1c:	f900041f 	str	xzr, [x0, #8]
+        sizes_[2] = 0;
+  20:	f94007e0 	ldr	x0, [sp, #8]
+  24:	f900081f 	str	xzr, [x0, #16]
+    }
+  28:	d503201f 	nop
+  2c:	910043ff 	add	sp, sp, #0x10
+  30:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl7NDRangeC2Emm:
+
+0000000000000000 <_ZN2cl7NDRangeC1Emm>:
+    NDRange(size_type size0, size_type size1)
+   0:	d10083ff 	sub	sp, sp, #0x20
+   4:	f9000fe0 	str	x0, [sp, #24]
+   8:	f9000be1 	str	x1, [sp, #16]
+   c:	f90007e2 	str	x2, [sp, #8]
+        : dimensions_(2)
+  10:	f9400fe0 	ldr	x0, [sp, #24]
+  14:	52800041 	mov	w1, #0x2                   	// #2
+  18:	b9001801 	str	w1, [x0, #24]
+        sizes_[0] = size0;
+  1c:	f9400fe0 	ldr	x0, [sp, #24]
+  20:	f9400be1 	ldr	x1, [sp, #16]
+  24:	f9000001 	str	x1, [x0]
+        sizes_[1] = size1;
+  28:	f9400fe0 	ldr	x0, [sp, #24]
+  2c:	f94007e1 	ldr	x1, [sp, #8]
+  30:	f9000401 	str	x1, [x0, #8]
+        sizes_[2] = 1;
+  34:	f9400fe0 	ldr	x0, [sp, #24]
+  38:	d2800021 	mov	x1, #0x1                   	// #1
+  3c:	f9000801 	str	x1, [x0, #16]
+    }
+  40:	d503201f 	nop
+  44:	910083ff 	add	sp, sp, #0x20
+  48:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl12CommandQueueD2Ev:
+
+0000000000000000 <_ZN2cl12CommandQueueD1Ev>:
+class CommandQueue : public detail::Wrapper<cl_command_queue>
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	94000000 	bl	0 <_ZN2cl12CommandQueueD1Ev>
+  14:	d503201f 	nop
+  18:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  1c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl12CommandQueueC2Ev:
+
+0000000000000000 <_ZN2cl12CommandQueueC1Ev>:
+    CommandQueue() { }
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	94000000 	bl	0 <_ZN2cl12CommandQueueC1Ev>
+  14:	d503201f 	nop
+  18:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  1c:	d65f03c0 	ret
+
+Disassembly of section .text._ZSt4moveIRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEONSt16remove_referenceIT_E4typeEOS8_:
+
+0000000000000000 <_ZSt4moveIRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEEONSt16remove_referenceIT_E4typeEOS8_>:
+   *  @param  __t  A thing of arbitrary type.
+   *  @return The parameter cast to an rvalue-reference to allow moving it.
+  */
+  template<typename _Tp>
+    constexpr typename std::remove_reference<_Tp>::type&&
+    move(_Tp&& __t) noexcept
+   0:	d10043ff 	sub	sp, sp, #0x10
+   4:	f90007e0 	str	x0, [sp, #8]
+    { return static_cast<typename std::remove_reference<_Tp>::type&&>(__t); }
+   8:	f94007e0 	ldr	x0, [sp, #8]
+   c:	910043ff 	add	sp, sp, #0x10
+  10:	d65f03c0 	ret
+
+Disassembly of section .text._ZNK11arm_compute5utils6Option4nameB5cxx11Ev:
+
+0000000000000000 <_ZNK11arm_compute5utils6Option4nameB5cxx11Ev>:
+    : _name{ std::move(name) }, _is_required{ is_required }, _is_set{ is_set }
+{
+}
+
+inline std::string Option::name() const
+{
+   0:	a9bd7bfd 	stp	x29, x30, [sp, #-48]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000bf3 	str	x19, [sp, #16]
+   c:	aa0803f3 	mov	x19, x8
+  10:	f90017a0 	str	x0, [x29, #40]
+    return _name;
+  14:	f94017a0 	ldr	x0, [x29, #40]
+  18:	91002000 	add	x0, x0, #0x8
+  1c:	aa0003e1 	mov	x1, x0
+  20:	aa1303e0 	mov	x0, x19
+  24:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC1ERKS4_>
+}
+  28:	aa1303e0 	mov	x0, x19
+  2c:	f9400bf3 	ldr	x19, [sp, #16]
+  30:	a8c37bfd 	ldp	x29, x30, [sp], #48
+  34:	d65f03c0 	ret
+
+Disassembly of section .text._ZN11arm_compute5utils6OptionD2Ev:
+
+0000000000000000 <_ZN11arm_compute5utils6OptionD1Ev>:
+    virtual ~Option() = default;
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	90000000 	adrp	x0, 0 <_ZN11arm_compute5utils6OptionD1Ev>
+  10:	91000001 	add	x1, x0, #0x0
+  14:	f9400fa0 	ldr	x0, [x29, #24]
+  18:	f9000001 	str	x1, [x0]
+  1c:	f9400fa0 	ldr	x0, [x29, #24]
+  20:	9100c000 	add	x0, x0, #0x30
+  24:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+  28:	f9400fa0 	ldr	x0, [x29, #24]
+  2c:	91002000 	add	x0, x0, #0x8
+  30:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+  34:	d503201f 	nop
+  38:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  3c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN11arm_compute5utils6OptionD0Ev:
+
+0000000000000000 <_ZN11arm_compute5utils6OptionD0Ev>:
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	94000000 	bl	0 <_ZN11arm_compute5utils6OptionD0Ev>
+  14:	f9400fa0 	ldr	x0, [x29, #24]
+  18:	94000000 	bl	0 <_ZdlPv>
+  1c:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  20:	d65f03c0 	ret
+
+Disassembly of section .text._ZN11arm_compute5utils12SimpleOptionIbED2Ev:
+
+0000000000000000 <_ZN11arm_compute5utils12SimpleOptionIbED1Ev>:
+{
+namespace utils
+{
+/** Implementation of an option that accepts a single value. */
+template <typename T>
+class SimpleOption : public Option
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	90000000 	adrp	x0, 0 <_ZN11arm_compute5utils12SimpleOptionIbED1Ev>
+  10:	91000001 	add	x1, x0, #0x0
+  14:	f9400fa0 	ldr	x0, [x29, #24]
+  18:	f9000001 	str	x1, [x0]
+  1c:	f9400fa0 	ldr	x0, [x29, #24]
+  20:	94000000 	bl	0 <_ZN11arm_compute5utils12SimpleOptionIbED1Ev>
+  24:	d503201f 	nop
+  28:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  2c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN11arm_compute5utils12SimpleOptionIbED0Ev:
+
+0000000000000000 <_ZN11arm_compute5utils12SimpleOptionIbED0Ev>:
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	94000000 	bl	0 <_ZN11arm_compute5utils12SimpleOptionIbED0Ev>
+  14:	f9400fa0 	ldr	x0, [x29, #24]
+  18:	94000000 	bl	0 <_ZdlPv>
+  1c:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  20:	d65f03c0 	ret
+
+Disassembly of section .text._ZN11arm_compute5utils12ToggleOption5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE:
+
+0000000000000000 <_ZN11arm_compute5utils12ToggleOption5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE>:
+}
+{
+}
+
+inline bool ToggleOption::parse(std::string value)
+{
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	f9000ba1 	str	x1, [x29, #16]
+    if(value == "true")
+  10:	90000000 	adrp	x0, 0 <_ZN11arm_compute5utils12ToggleOption5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE>
+  14:	91000000 	add	x0, x0, #0x0
+  18:	aa0003e1 	mov	x1, x0
+  1c:	f9400ba0 	ldr	x0, [x29, #16]
+  20:	94000000 	bl	0 <_ZN11arm_compute5utils12ToggleOption5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE>
+  24:	12001c00 	and	w0, w0, #0xff
+  28:	7100001f 	cmp	w0, #0x0
+  2c:	54000100 	b.eq	4c <_ZN11arm_compute5utils12ToggleOption5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE+0x4c>  // b.none
+    {
+        _value  = true;
+  30:	f9400fa0 	ldr	x0, [x29, #24]
+  34:	52800021 	mov	w1, #0x1                   	// #1
+  38:	39014001 	strb	w1, [x0, #80]
+        _is_set = true;
+  3c:	f9400fa0 	ldr	x0, [x29, #24]
+  40:	52800021 	mov	w1, #0x1                   	// #1
+  44:	3900a401 	strb	w1, [x0, #41]
+  48:	1400000e 	b	80 <_ZN11arm_compute5utils12ToggleOption5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE+0x80>
+    }
+    else if(value == "false")
+  4c:	90000000 	adrp	x0, 0 <_ZN11arm_compute5utils12ToggleOption5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE>
+  50:	91000000 	add	x0, x0, #0x0
+  54:	aa0003e1 	mov	x1, x0
+  58:	f9400ba0 	ldr	x0, [x29, #16]
+  5c:	94000000 	bl	0 <_ZN11arm_compute5utils12ToggleOption5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE>
+  60:	12001c00 	and	w0, w0, #0xff
+  64:	7100001f 	cmp	w0, #0x0
+  68:	540000c0 	b.eq	80 <_ZN11arm_compute5utils12ToggleOption5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE+0x80>  // b.none
+    {
+        _value  = false;
+  6c:	f9400fa0 	ldr	x0, [x29, #24]
+  70:	3901401f 	strb	wzr, [x0, #80]
+        _is_set = true;
+  74:	f9400fa0 	ldr	x0, [x29, #24]
+  78:	52800021 	mov	w1, #0x1                   	// #1
+  7c:	3900a401 	strb	w1, [x0, #41]
+    }
+
+    return _is_set;
+  80:	f9400fa0 	ldr	x0, [x29, #24]
+  84:	3940a400 	ldrb	w0, [x0, #41]
+}
+  88:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  8c:	d65f03c0 	ret
+
+Disassembly of section .text._ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev:
+
+0000000000000000 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev>:
+
+inline std::string ToggleOption::help() const
+{
+   0:	a9b07bfd 	stp	x29, x30, [sp, #-256]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000bf3 	str	x19, [sp, #16]
+   c:	aa0803f3 	mov	x19, x8
+  10:	f90017a0 	str	x0, [x29, #40]
+  14:	90000000 	adrp	x0, 0 <__stack_chk_guard>
+  18:	f9400000 	ldr	x0, [x0]
+  1c:	f9400001 	ldr	x1, [x0]
+  20:	f9007fa1 	str	x1, [x29, #248]
+  24:	d2800001 	mov	x1, #0x0                   	// #0
+    return "--" + name() + ", --no-" + name() + " - " + _help;
+  28:	f94017a0 	ldr	x0, [x29, #40]
+  2c:	9100e3a1 	add	x1, x29, #0x38
+  30:	aa0103e8 	mov	x8, x1
+  34:	94000000 	bl	0 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev>
+  38:	9100e3a1 	add	x1, x29, #0x38
+  3c:	90000000 	adrp	x0, 0 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev>
+  40:	91000000 	add	x0, x0, #0x0
+  44:	910163a2 	add	x2, x29, #0x58
+  48:	aa0203e8 	mov	x8, x2
+  4c:	94000000 	bl	0 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev>
+  50:	90000000 	adrp	x0, 0 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev>
+  54:	91000001 	add	x1, x0, #0x0
+  58:	910163a0 	add	x0, x29, #0x58
+  5c:	9101e3a2 	add	x2, x29, #0x78
+  60:	aa0203e8 	mov	x8, x2
+  64:	94000000 	bl	0 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev>
+  68:	f94017a0 	ldr	x0, [x29, #40]
+  6c:	910263a1 	add	x1, x29, #0x98
+  70:	aa0103e8 	mov	x8, x1
+  74:	94000000 	bl	0 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev>
+  78:	910263a1 	add	x1, x29, #0x98
+  7c:	9101e3a0 	add	x0, x29, #0x78
+  80:	9102e3a2 	add	x2, x29, #0xb8
+  84:	aa0203e8 	mov	x8, x2
+  88:	94000000 	bl	0 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev>
+  8c:	90000000 	adrp	x0, 0 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev>
+  90:	91000001 	add	x1, x0, #0x0
+  94:	9102e3a0 	add	x0, x29, #0xb8
+  98:	910363a2 	add	x2, x29, #0xd8
+  9c:	aa0203e8 	mov	x8, x2
+  a0:	94000000 	bl	0 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev>
+  a4:	f94017a0 	ldr	x0, [x29, #40]
+  a8:	9100c001 	add	x1, x0, #0x30
+  ac:	910363a0 	add	x0, x29, #0xd8
+  b0:	aa1303e8 	mov	x8, x19
+  b4:	94000000 	bl	0 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev>
+  b8:	d503201f 	nop
+  bc:	910363a0 	add	x0, x29, #0xd8
+  c0:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+  c4:	9102e3a0 	add	x0, x29, #0xb8
+  c8:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+  cc:	910263a0 	add	x0, x29, #0x98
+  d0:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+  d4:	9101e3a0 	add	x0, x29, #0x78
+  d8:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+  dc:	910163a0 	add	x0, x29, #0x58
+  e0:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+  e4:	9100e3a0 	add	x0, x29, #0x38
+  e8:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+  ec:	d503201f 	nop
+}
+  f0:	aa1303e0 	mov	x0, x19
+  f4:	90000001 	adrp	x1, 0 <__stack_chk_guard>
+  f8:	f9400021 	ldr	x1, [x1]
+  fc:	f9407fa2 	ldr	x2, [x29, #248]
+ 100:	f9400021 	ldr	x1, [x1]
+ 104:	ca010041 	eor	x1, x2, x1
+ 108:	f100003f 	cmp	x1, #0x0
+ 10c:	54000380 	b.eq	17c <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev+0x17c>  // b.none
+ 110:	1400001a 	b	178 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev+0x178>
+ 114:	aa0003f3 	mov	x19, x0
+    return "--" + name() + ", --no-" + name() + " - " + _help;
+ 118:	910363a0 	add	x0, x29, #0xd8
+ 11c:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+ 120:	14000002 	b	128 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev+0x128>
+ 124:	aa0003f3 	mov	x19, x0
+ 128:	9102e3a0 	add	x0, x29, #0xb8
+ 12c:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+ 130:	14000002 	b	138 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev+0x138>
+ 134:	aa0003f3 	mov	x19, x0
+ 138:	910263a0 	add	x0, x29, #0x98
+ 13c:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+ 140:	14000002 	b	148 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev+0x148>
+ 144:	aa0003f3 	mov	x19, x0
+ 148:	9101e3a0 	add	x0, x29, #0x78
+ 14c:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+ 150:	14000002 	b	158 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev+0x158>
+ 154:	aa0003f3 	mov	x19, x0
+ 158:	910163a0 	add	x0, x29, #0x58
+ 15c:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+ 160:	14000002 	b	168 <_ZNK11arm_compute5utils12ToggleOption4helpB5cxx11Ev+0x168>
+ 164:	aa0003f3 	mov	x19, x0
+ 168:	9100e3a0 	add	x0, x29, #0x38
+ 16c:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+ 170:	aa1303e0 	mov	x0, x19
+ 174:	94000000 	bl	0 <_Unwind_Resume>
+}
+ 178:	94000000 	bl	0 <__stack_chk_fail>
+ 17c:	f9400bf3 	ldr	x19, [sp, #16]
+ 180:	a8d07bfd 	ldp	x29, x30, [sp], #256
+ 184:	d65f03c0 	ret
+
+Disassembly of section .text._ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_S9_:
+
+0000000000000000 <_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_S9_>:
+	      basic_string<_CharT, _Traits, _Alloc>&& __rhs)
+    { return std::move(__rhs.insert(0, __lhs)); }
+
+  template<typename _CharT, typename _Traits, typename _Alloc>
+    inline basic_string<_CharT, _Traits, _Alloc>
+    operator+(basic_string<_CharT, _Traits, _Alloc>&& __lhs,
+   0:	a9bc7bfd 	stp	x29, x30, [sp, #-64]!
+   4:	910003fd 	mov	x29, sp
+   8:	a90153f3 	stp	x19, x20, [sp, #16]
+   c:	aa0803f4 	mov	x20, x8
+  10:	f90017a0 	str	x0, [x29, #40]
+  14:	f90013a1 	str	x1, [x29, #32]
+	      basic_string<_CharT, _Traits, _Alloc>&& __rhs)
+    {
+      const auto __size = __lhs.size() + __rhs.size();
+  18:	f94017a0 	ldr	x0, [x29, #40]
+  1c:	94000000 	bl	0 <_ZNKSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE4sizeEv>
+  20:	aa0003f3 	mov	x19, x0
+  24:	f94013a0 	ldr	x0, [x29, #32]
+  28:	94000000 	bl	0 <_ZNKSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE4sizeEv>
+  2c:	8b000260 	add	x0, x19, x0
+  30:	f9001fa0 	str	x0, [x29, #56]
+      const bool __cond = (__size > __lhs.capacity()
+  34:	f94017a0 	ldr	x0, [x29, #40]
+  38:	94000000 	bl	0 <_ZNKSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE8capacityEv>
+  3c:	aa0003e1 	mov	x1, x0
+			   && __size <= __rhs.capacity());
+  40:	f9401fa0 	ldr	x0, [x29, #56]
+  44:	eb01001f 	cmp	x0, x1
+  48:	54000129 	b.ls	6c <_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_S9_+0x6c>  // b.plast
+  4c:	f94013a0 	ldr	x0, [x29, #32]
+  50:	94000000 	bl	0 <_ZNKSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE8capacityEv>
+  54:	aa0003e1 	mov	x1, x0
+  58:	f9401fa0 	ldr	x0, [x29, #56]
+  5c:	eb01001f 	cmp	x0, x1
+  60:	54000068 	b.hi	6c <_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_S9_+0x6c>  // b.pmore
+  64:	52800020 	mov	w0, #0x1                   	// #1
+  68:	14000002 	b	70 <_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_S9_+0x70>
+  6c:	52800000 	mov	w0, #0x0                   	// #0
+      const bool __cond = (__size > __lhs.capacity()
+  70:	3900dfa0 	strb	w0, [x29, #55]
+      return __cond ? std::move(__rhs.insert(0, __lhs))
+	            : std::move(__lhs.append(__rhs));
+  74:	3940dfa0 	ldrb	w0, [x29, #55]
+  78:	7100001f 	cmp	w0, #0x0
+  7c:	540000e0 	b.eq	98 <_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_S9_+0x98>  // b.none
+      return __cond ? std::move(__rhs.insert(0, __lhs))
+  80:	f94017a2 	ldr	x2, [x29, #40]
+  84:	d2800001 	mov	x1, #0x0                   	// #0
+  88:	f94013a0 	ldr	x0, [x29, #32]
+  8c:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6insertEmRKS4_>
+	            : std::move(__lhs.append(__rhs));
+  90:	94000000 	bl	0 <_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_S9_>
+  94:	14000005 	b	a8 <_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_S9_+0xa8>
+  98:	f94013a1 	ldr	x1, [x29, #32]
+  9c:	f94017a0 	ldr	x0, [x29, #40]
+  a0:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6appendERKS4_>
+  a4:	94000000 	bl	0 <_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_S9_>
+  a8:	aa0003e1 	mov	x1, x0
+  ac:	aa1403e0 	mov	x0, x20
+  b0:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC1EOS4_>
+    }
+  b4:	aa1403e0 	mov	x0, x20
+  b8:	a94153f3 	ldp	x19, x20, [sp, #16]
+  bc:	a8c47bfd 	ldp	x29, x30, [sp], #64
+  c0:	d65f03c0 	ret
+
+Disassembly of section .text._ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_OS8_:
+
+0000000000000000 <_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_OS8_>:
+
+  template<typename _CharT, typename _Traits, typename _Alloc>
+    inline basic_string<_CharT, _Traits, _Alloc>
+    operator+(const _CharT* __lhs,
+   0:	a9bd7bfd 	stp	x29, x30, [sp, #-48]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000bf3 	str	x19, [sp, #16]
+   c:	aa0803f3 	mov	x19, x8
+  10:	f90017a0 	str	x0, [x29, #40]
+  14:	f90013a1 	str	x1, [x29, #32]
+	      basic_string<_CharT, _Traits, _Alloc>&& __rhs)
+    { return std::move(__rhs.insert(0, __lhs)); }
+  18:	f94017a2 	ldr	x2, [x29, #40]
+  1c:	d2800001 	mov	x1, #0x0                   	// #0
+  20:	f94013a0 	ldr	x0, [x29, #32]
+  24:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6insertEmPKc>
+  28:	94000000 	bl	0 <_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_OS8_>
+  2c:	aa0003e1 	mov	x1, x0
+  30:	aa1303e0 	mov	x0, x19
+  34:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC1EOS4_>
+  38:	aa1303e0 	mov	x0, x19
+  3c:	f9400bf3 	ldr	x19, [sp, #16]
+  40:	a8c37bfd 	ldp	x29, x30, [sp], #48
+  44:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl6detail7WrapperIP15_cl_platform_idED2Ev:
+
+0000000000000000 <_ZN2cl6detail7WrapperIP15_cl_platform_idED1Ev>:
+    ~Wrapper()
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+        if (object_ != NULL) { release(); }
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	f9400000 	ldr	x0, [x0]
+  14:	f100001f 	cmp	x0, #0x0
+  18:	54000060 	b.eq	24 <_ZN2cl6detail7WrapperIP15_cl_platform_idED1Ev+0x24>  // b.none
+  1c:	f9400fa0 	ldr	x0, [x29, #24]
+  20:	94000000 	bl	0 <_ZN2cl6detail7WrapperIP15_cl_platform_idED1Ev>
+    }
+  24:	d503201f 	nop
+  28:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  2c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl6detail7WrapperIP15_cl_platform_idEC2Ev:
+
+0000000000000000 <_ZN2cl6detail7WrapperIP15_cl_platform_idEC1Ev>:
+    Wrapper() : object_(NULL) { }
+   0:	d10043ff 	sub	sp, sp, #0x10
+   4:	f90007e0 	str	x0, [sp, #8]
+   8:	f94007e0 	ldr	x0, [sp, #8]
+   c:	f900001f 	str	xzr, [x0]
+  10:	d503201f 	nop
+  14:	910043ff 	add	sp, sp, #0x10
+  18:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl6detail7WrapperIP11_cl_contextED2Ev:
+
+0000000000000000 <_ZN2cl6detail7WrapperIP11_cl_contextED1Ev>:
+    ~Wrapper()
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+        if (object_ != NULL) { release(); }
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	f9400000 	ldr	x0, [x0]
+  14:	f100001f 	cmp	x0, #0x0
+  18:	54000060 	b.eq	24 <_ZN2cl6detail7WrapperIP11_cl_contextED1Ev+0x24>  // b.none
+  1c:	f9400fa0 	ldr	x0, [x29, #24]
+  20:	94000000 	bl	0 <_ZN2cl6detail7WrapperIP11_cl_contextED1Ev>
+    }
+  24:	d503201f 	nop
+  28:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  2c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl6detail7WrapperIP11_cl_contextEC2Ev:
+
+0000000000000000 <_ZN2cl6detail7WrapperIP11_cl_contextEC1Ev>:
+    Wrapper() : object_(NULL) { }
+   0:	d10043ff 	sub	sp, sp, #0x10
+   4:	f90007e0 	str	x0, [sp, #8]
+   8:	f94007e0 	ldr	x0, [sp, #8]
+   c:	f900001f 	str	xzr, [x0]
+  10:	d503201f 	nop
+  14:	910043ff 	add	sp, sp, #0x10
+  18:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl6detail7WrapperIP17_cl_command_queueED2Ev:
+
+0000000000000000 <_ZN2cl6detail7WrapperIP17_cl_command_queueED1Ev>:
+    ~Wrapper()
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+        if (object_ != NULL) { release(); }
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	f9400000 	ldr	x0, [x0]
+  14:	f100001f 	cmp	x0, #0x0
+  18:	54000060 	b.eq	24 <_ZN2cl6detail7WrapperIP17_cl_command_queueED1Ev+0x24>  // b.none
+  1c:	f9400fa0 	ldr	x0, [x29, #24]
+  20:	94000000 	bl	0 <_ZN2cl6detail7WrapperIP17_cl_command_queueED1Ev>
+    }
+  24:	d503201f 	nop
+  28:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  2c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN2cl6detail7WrapperIP17_cl_command_queueEC2Ev:
+
+0000000000000000 <_ZN2cl6detail7WrapperIP17_cl_command_queueEC1Ev>:
+    Wrapper() : object_(NULL) { }
+   0:	d10043ff 	sub	sp, sp, #0x10
+   4:	f90007e0 	str	x0, [sp, #8]
+   8:	f94007e0 	ldr	x0, [sp, #8]
+   c:	f900001f 	str	xzr, [x0]
+  10:	d503201f 	nop
+  14:	910043ff 	add	sp, sp, #0x10
+  18:	d65f03c0 	ret
+
+Disassembly of section .text._ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_PKS5_:
+
+0000000000000000 <_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_PKS5_>:
+	      basic_string<_CharT, _Traits, _Alloc>&& __rhs)
+    { return std::move(__rhs.insert(0, 1, __lhs)); }
+
+  template<typename _CharT, typename _Traits, typename _Alloc>
+    inline basic_string<_CharT, _Traits, _Alloc>
+    operator+(basic_string<_CharT, _Traits, _Alloc>&& __lhs,
+   0:	a9bd7bfd 	stp	x29, x30, [sp, #-48]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000bf3 	str	x19, [sp, #16]
+   c:	aa0803f3 	mov	x19, x8
+  10:	f90017a0 	str	x0, [x29, #40]
+  14:	f90013a1 	str	x1, [x29, #32]
+	      const _CharT* __rhs)
+    { return std::move(__lhs.append(__rhs)); }
+  18:	f94013a1 	ldr	x1, [x29, #32]
+  1c:	f94017a0 	ldr	x0, [x29, #40]
+  20:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6appendEPKc>
+  24:	94000000 	bl	0 <_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_PKS5_>
+  28:	aa0003e1 	mov	x1, x0
+  2c:	aa1303e0 	mov	x0, x19
+  30:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC1EOS4_>
+  34:	aa1303e0 	mov	x0, x19
+  38:	f9400bf3 	ldr	x19, [sp, #16]
+  3c:	a8c37bfd 	ldp	x29, x30, [sp], #48
+  40:	d65f03c0 	ret
+
+Disassembly of section .text._ZSteqIcSt11char_traitsIcESaIcEEbRKNSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_:
+
+0000000000000000 <_ZSteqIcSt11char_traitsIcESaIcEEbRKNSt7__cxx1112basic_stringIT_T0_T1_EEPKS5_>:
+   *  @param __rhs  C string.
+   *  @return  True if @a __lhs.compare(@a __rhs) == 0.  False otherwise.
+   */
+  template<typename _CharT, typename _Traits, typename _Alloc>
+    inline bool
+    operator==(const basic_string<_CharT, _Traits, _Alloc>& __lhs,
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	f9000ba1 	str	x1, [x29, #16]
+	       const _CharT* __rhs)
+    { return __lhs.compare(__rhs) == 0; }
+  10:	f9400ba1 	ldr	x1, [x29, #16]
+  14:	f9400fa0 	ldr	x0, [x29, #24]
+  18:	94000000 	bl	0 <_ZNKSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE7compareEPKc>
+  1c:	7100001f 	cmp	w0, #0x0
+  20:	1a9f17e0 	cset	w0, eq  // eq = none
+  24:	12001c00 	and	w0, w0, #0xff
+  28:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  2c:	d65f03c0 	ret
+
+Disassembly of section .text._ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_RKS8_:
+
+0000000000000000 <_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_RKS8_>:
+    operator+(basic_string<_CharT, _Traits, _Alloc>&& __lhs,
+   0:	a9bd7bfd 	stp	x29, x30, [sp, #-48]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000bf3 	str	x19, [sp, #16]
+   c:	aa0803f3 	mov	x19, x8
+  10:	f90017a0 	str	x0, [x29, #40]
+  14:	f90013a1 	str	x1, [x29, #32]
+    { return std::move(__lhs.append(__rhs)); }
+  18:	f94013a1 	ldr	x1, [x29, #32]
+  1c:	f94017a0 	ldr	x0, [x29, #40]
+  20:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE6appendERKS4_>
+  24:	94000000 	bl	0 <_ZStplIcSt11char_traitsIcESaIcEENSt7__cxx1112basic_stringIT_T0_T1_EEOS8_RKS8_>
+  28:	aa0003e1 	mov	x1, x0
+  2c:	aa1303e0 	mov	x0, x19
+  30:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEC1EOS4_>
+  34:	aa1303e0 	mov	x0, x19
+  38:	f9400bf3 	ldr	x19, [sp, #16]
+  3c:	a8c37bfd 	ldp	x29, x30, [sp], #48
+  40:	d65f03c0 	ret
+
+Disassembly of section .text._ZNK2cl6detail7WrapperIP15_cl_platform_idE7releaseEv:
+
+0000000000000000 <_ZNK2cl6detail7WrapperIP15_cl_platform_idE7releaseEv>:
+    cl_int release() const
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+        if (object_ != nullptr) {
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	f9400000 	ldr	x0, [x0]
+  14:	f100001f 	cmp	x0, #0x0
+  18:	540000a0 	b.eq	2c <_ZNK2cl6detail7WrapperIP15_cl_platform_idE7releaseEv+0x2c>  // b.none
+            return ReferenceHandler<cl_type>::release(object_);
+  1c:	f9400fa0 	ldr	x0, [x29, #24]
+  20:	f9400000 	ldr	x0, [x0]
+  24:	94000000 	bl	0 <_ZNK2cl6detail7WrapperIP15_cl_platform_idE7releaseEv>
+  28:	14000002 	b	30 <_ZNK2cl6detail7WrapperIP15_cl_platform_idE7releaseEv+0x30>
+            return CL_SUCCESS;
+  2c:	52800000 	mov	w0, #0x0                   	// #0
+    }
+  30:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  34:	d65f03c0 	ret
+
+Disassembly of section .text._ZNK2cl6detail7WrapperIP11_cl_contextE7releaseEv:
+
+0000000000000000 <_ZNK2cl6detail7WrapperIP11_cl_contextE7releaseEv>:
+    cl_int release() const
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+        if (object_ != nullptr) {
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	f9400000 	ldr	x0, [x0]
+  14:	f100001f 	cmp	x0, #0x0
+  18:	540000a0 	b.eq	2c <_ZNK2cl6detail7WrapperIP11_cl_contextE7releaseEv+0x2c>  // b.none
+            return ReferenceHandler<cl_type>::release(object_);
+  1c:	f9400fa0 	ldr	x0, [x29, #24]
+  20:	f9400000 	ldr	x0, [x0]
+  24:	94000000 	bl	0 <_ZNK2cl6detail7WrapperIP11_cl_contextE7releaseEv>
+  28:	14000002 	b	30 <_ZNK2cl6detail7WrapperIP11_cl_contextE7releaseEv+0x30>
+            return CL_SUCCESS;
+  2c:	52800000 	mov	w0, #0x0                   	// #0
+    }
+  30:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  34:	d65f03c0 	ret
+
+Disassembly of section .text._ZNK2cl6detail7WrapperIP17_cl_command_queueE7releaseEv:
+
+0000000000000000 <_ZNK2cl6detail7WrapperIP17_cl_command_queueE7releaseEv>:
+    cl_int release() const
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+        if (object_ != nullptr) {
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	f9400000 	ldr	x0, [x0]
+  14:	f100001f 	cmp	x0, #0x0
+  18:	540000a0 	b.eq	2c <_ZNK2cl6detail7WrapperIP17_cl_command_queueE7releaseEv+0x2c>  // b.none
+            return ReferenceHandler<cl_type>::release(object_);
+  1c:	f9400fa0 	ldr	x0, [x29, #24]
+  20:	f9400000 	ldr	x0, [x0]
+  24:	94000000 	bl	0 <_ZNK2cl6detail7WrapperIP17_cl_command_queueE7releaseEv>
+  28:	14000002 	b	30 <_ZNK2cl6detail7WrapperIP17_cl_command_queueE7releaseEv+0x30>
+            return CL_SUCCESS;
+  2c:	52800000 	mov	w0, #0x0                   	// #0
+    }
+  30:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  34:	d65f03c0 	ret
+
+Disassembly of section .text._ZN11arm_compute5utils12ToggleOptionD2Ev:
+
+0000000000000000 <_ZN11arm_compute5utils12ToggleOptionD1Ev>:
+class ToggleOption : public SimpleOption<bool>
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	90000000 	adrp	x0, 0 <_ZN11arm_compute5utils12ToggleOptionD1Ev>
+  10:	91000001 	add	x1, x0, #0x0
+  14:	f9400fa0 	ldr	x0, [x29, #24]
+  18:	f9000001 	str	x1, [x0]
+  1c:	f9400fa0 	ldr	x0, [x29, #24]
+  20:	94000000 	bl	0 <_ZN11arm_compute5utils12ToggleOptionD1Ev>
+  24:	d503201f 	nop
+  28:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  2c:	d65f03c0 	ret
+
+Disassembly of section .text._ZN11arm_compute5utils12ToggleOptionD0Ev:
+
+0000000000000000 <_ZN11arm_compute5utils12ToggleOptionD0Ev>:
+   0:	a9be7bfd 	stp	x29, x30, [sp, #-32]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000fa0 	str	x0, [x29, #24]
+   c:	f9400fa0 	ldr	x0, [x29, #24]
+  10:	94000000 	bl	0 <_ZN11arm_compute5utils12ToggleOptionD0Ev>
+  14:	f9400fa0 	ldr	x0, [x29, #24]
+  18:	94000000 	bl	0 <_ZdlPv>
+  1c:	a8c27bfd 	ldp	x29, x30, [sp], #32
+  20:	d65f03c0 	ret
+
+Disassembly of section .text._ZN11arm_compute5utils12SimpleOptionIbE5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE:
+
+0000000000000000 <_ZN11arm_compute5utils12SimpleOptionIbE5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE>:
+    : Option{ std::move(name), false, true }, _value{ std::move(default_value) }
+{
+}
+
+template <typename T>
+bool SimpleOption<T>::parse(std::string value)
+   0:	a9a37bfd 	stp	x29, x30, [sp, #-464]!
+   4:	910003fd 	mov	x29, sp
+   8:	a90153f3 	stp	x19, x20, [sp, #16]
+   c:	f90017a0 	str	x0, [x29, #40]
+  10:	f90013a1 	str	x1, [x29, #32]
+  14:	90000000 	adrp	x0, 0 <__stack_chk_guard>
+  18:	f9400000 	ldr	x0, [x0]
+  1c:	f9400001 	ldr	x1, [x0]
+  20:	f900e7a1 	str	x1, [x29, #456]
+  24:	d2800001 	mov	x1, #0x0                   	// #0
+{
+    try
+    {
+        std::stringstream stream{ std::move(value) };
+  28:	f94013a0 	ldr	x0, [x29, #32]
+  2c:	94000000 	bl	0 <_ZN11arm_compute5utils12SimpleOptionIbE5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE>
+  30:	aa0003f3 	mov	x19, x0
+  34:	52800101 	mov	w1, #0x8                   	// #8
+  38:	52800200 	mov	w0, #0x10                  	// #16
+  3c:	94000000 	bl	0 <_ZN11arm_compute5utils12SimpleOptionIbE5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE>
+  40:	2a0003e1 	mov	w1, w0
+  44:	910103a0 	add	x0, x29, #0x40
+  48:	2a0103e2 	mov	w2, w1
+  4c:	aa1303e1 	mov	x1, x19
+  50:	94000000 	bl	0 <_ZNSt7__cxx1118basic_stringstreamIcSt11char_traitsIcESaIcEEC1ERKNS_12basic_stringIcS2_S3_EESt13_Ios_Openmode>
+        stream >> _value;
+  54:	f94017a0 	ldr	x0, [x29, #40]
+  58:	91014001 	add	x1, x0, #0x50
+  5c:	910103a0 	add	x0, x29, #0x40
+  60:	94000000 	bl	0 <_ZNSirsERb>
+        _is_set = !stream.fail();
+  64:	910103a0 	add	x0, x29, #0x40
+  68:	91020000 	add	x0, x0, #0x80
+  6c:	94000000 	bl	0 <_ZNKSt9basic_iosIcSt11char_traitsIcEE4failEv>
+  70:	12001c00 	and	w0, w0, #0xff
+  74:	52000000 	eor	w0, w0, #0x1
+  78:	12001c01 	and	w1, w0, #0xff
+  7c:	f94017a0 	ldr	x0, [x29, #40]
+  80:	3900a401 	strb	w1, [x0, #41]
+        return _is_set;
+  84:	f94017a0 	ldr	x0, [x29, #40]
+  88:	3940a413 	ldrb	w19, [x0, #41]
+        std::stringstream stream{ std::move(value) };
+  8c:	910103a0 	add	x0, x29, #0x40
+  90:	94000000 	bl	0 <_ZNSt7__cxx1118basic_stringstreamIcSt11char_traitsIcESaIcEED1Ev>
+  94:	2a1303e0 	mov	w0, w19
+    }
+    catch(const std::invalid_argument &)
+    {
+        return false;
+    }
+}
+  98:	90000001 	adrp	x1, 0 <__stack_chk_guard>
+  9c:	f9400021 	ldr	x1, [x1]
+  a0:	f940e7a2 	ldr	x2, [x29, #456]
+  a4:	f9400021 	ldr	x1, [x1]
+  a8:	ca010041 	eor	x1, x2, x1
+  ac:	f100003f 	cmp	x1, #0x0
+  b0:	54000240 	b.eq	f8 <_ZN11arm_compute5utils12SimpleOptionIbE5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE+0xf8>  // b.none
+  b4:	14000010 	b	f4 <_ZN11arm_compute5utils12SimpleOptionIbE5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE+0xf4>
+  b8:	aa0003f4 	mov	x20, x0
+  bc:	aa0103f3 	mov	x19, x1
+        std::stringstream stream{ std::move(value) };
+  c0:	910103a0 	add	x0, x29, #0x40
+  c4:	94000000 	bl	0 <_ZNSt7__cxx1118basic_stringstreamIcSt11char_traitsIcESaIcEED1Ev>
+  c8:	aa1403e0 	mov	x0, x20
+  cc:	aa1303e1 	mov	x1, x19
+  d0:	14000001 	b	d4 <_ZN11arm_compute5utils12SimpleOptionIbE5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE+0xd4>
+  d4:	f100043f 	cmp	x1, #0x1
+  d8:	54000040 	b.eq	e0 <_ZN11arm_compute5utils12SimpleOptionIbE5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE+0xe0>  // b.none
+  dc:	94000000 	bl	0 <_Unwind_Resume>
+    catch(const std::invalid_argument &)
+  e0:	94000000 	bl	0 <__cxa_begin_catch>
+  e4:	f9001fa0 	str	x0, [x29, #56]
+        return false;
+  e8:	52800013 	mov	w19, #0x0                   	// #0
+    catch(const std::invalid_argument &)
+  ec:	94000000 	bl	0 <__cxa_end_catch>
+  f0:	17ffffe9 	b	94 <_ZN11arm_compute5utils12SimpleOptionIbE5parseENSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE+0x94>
+}
+  f4:	94000000 	bl	0 <__stack_chk_fail>
+  f8:	a94153f3 	ldp	x19, x20, [sp, #16]
+  fc:	a8dd7bfd 	ldp	x29, x30, [sp], #464
+ 100:	d65f03c0 	ret
+
+Disassembly of section .text._ZNK11arm_compute5utils12SimpleOptionIbE4helpB5cxx11Ev:
+
+0000000000000000 <_ZNK11arm_compute5utils12SimpleOptionIbE4helpB5cxx11Ev>:
+    _is_set = true;
+    return true;
+}
+
+template <typename T>
+inline std::string SimpleOption<T>::help() const
+   0:	a9b67bfd 	stp	x29, x30, [sp, #-160]!
+   4:	910003fd 	mov	x29, sp
+   8:	f9000bf3 	str	x19, [sp, #16]
+   c:	aa0803f3 	mov	x19, x8
+  10:	f90017a0 	str	x0, [x29, #40]
+  14:	90000000 	adrp	x0, 0 <__stack_chk_guard>
+  18:	f9400000 	ldr	x0, [x0]
+  1c:	f9400001 	ldr	x1, [x0]
+  20:	f9004fa1 	str	x1, [x29, #152]
+  24:	d2800001 	mov	x1, #0x0                   	// #0
+{
+    return "--" + name() + "=VALUE - " + _help;
+  28:	f94017a0 	ldr	x0, [x29, #40]
+  2c:	9100e3a1 	add	x1, x29, #0x38
+  30:	aa0103e8 	mov	x8, x1
+  34:	94000000 	bl	0 <_ZNK11arm_compute5utils12SimpleOptionIbE4helpB5cxx11Ev>
+  38:	9100e3a1 	add	x1, x29, #0x38
+  3c:	90000000 	adrp	x0, 0 <_ZNK11arm_compute5utils12SimpleOptionIbE4helpB5cxx11Ev>
+  40:	91000000 	add	x0, x0, #0x0
+  44:	910163a2 	add	x2, x29, #0x58
+  48:	aa0203e8 	mov	x8, x2
+  4c:	94000000 	bl	0 <_ZNK11arm_compute5utils12SimpleOptionIbE4helpB5cxx11Ev>
+  50:	90000000 	adrp	x0, 0 <_ZNK11arm_compute5utils12SimpleOptionIbE4helpB5cxx11Ev>
+  54:	91000001 	add	x1, x0, #0x0
+  58:	910163a0 	add	x0, x29, #0x58
+  5c:	9101e3a2 	add	x2, x29, #0x78
+  60:	aa0203e8 	mov	x8, x2
+  64:	94000000 	bl	0 <_ZNK11arm_compute5utils12SimpleOptionIbE4helpB5cxx11Ev>
+  68:	f94017a0 	ldr	x0, [x29, #40]
+  6c:	9100c001 	add	x1, x0, #0x30
+  70:	9101e3a0 	add	x0, x29, #0x78
+  74:	aa1303e8 	mov	x8, x19
+  78:	94000000 	bl	0 <_ZNK11arm_compute5utils12SimpleOptionIbE4helpB5cxx11Ev>
+  7c:	9101e3a0 	add	x0, x29, #0x78
+  80:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+  84:	910163a0 	add	x0, x29, #0x58
+  88:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+  8c:	9100e3a0 	add	x0, x29, #0x38
+  90:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+}
+  94:	aa1303e0 	mov	x0, x19
+  98:	90000001 	adrp	x1, 0 <__stack_chk_guard>
+  9c:	f9400021 	ldr	x1, [x1]
+  a0:	f9404fa2 	ldr	x2, [x29, #152]
+  a4:	f9400021 	ldr	x1, [x1]
+  a8:	ca010041 	eor	x1, x2, x1
+  ac:	f100003f 	cmp	x1, #0x0
+  b0:	54000200 	b.eq	f0 <_ZNK11arm_compute5utils12SimpleOptionIbE4helpB5cxx11Ev+0xf0>  // b.none
+  b4:	1400000e 	b	ec <_ZNK11arm_compute5utils12SimpleOptionIbE4helpB5cxx11Ev+0xec>
+  b8:	aa0003f3 	mov	x19, x0
+    return "--" + name() + "=VALUE - " + _help;
+  bc:	9101e3a0 	add	x0, x29, #0x78
+  c0:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+  c4:	14000002 	b	cc <_ZNK11arm_compute5utils12SimpleOptionIbE4helpB5cxx11Ev+0xcc>
+  c8:	aa0003f3 	mov	x19, x0
+  cc:	910163a0 	add	x0, x29, #0x58
+  d0:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+  d4:	14000002 	b	dc <_ZNK11arm_compute5utils12SimpleOptionIbE4helpB5cxx11Ev+0xdc>
+  d8:	aa0003f3 	mov	x19, x0
+  dc:	9100e3a0 	add	x0, x29, #0x38
+  e0:	94000000 	bl	0 <_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEED1Ev>
+  e4:	aa1303e0 	mov	x0, x19
+  e8:	94000000 	bl	0 <_Unwind_Resume>
+}
+  ec:	94000000 	bl	0 <__stack_chk_fail>
+  f0:	f9400bf3 	ldr	x19, [sp, #16]
+  f4:	a8ca7bfd 	ldp	x29, x30, [sp], #160
+  f8:	d65f03c0 	ret

@@ -1,0 +1,1 @@
+"arm_compute_version=v19.08 Build options: {'arch': 'arm64-v8a', 'opencl': '1', 'neon': '1', 'build': 'native', 'debug': '0', 'os': 'linux', 'Werror': '1'} Git hash=unknown"
