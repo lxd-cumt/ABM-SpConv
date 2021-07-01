@@ -1,0 +1,8 @@
+aarch64-linux-gnu-g++ -o build/examples/$1.o -c -Wno-deprecated-declarations -Wall -DARCH_ARM -Wextra -Wno-unused-parameter -pedantic -Wdisabled-optimization -Wformat=2 -Winit-self -Wstrict-overflow=2 -Wswitch-default -fpermissive -std=gnu++11 -Wno-vla -Woverloaded-virtual -Wctor-dtor-privacy -Wsign-promo -Weffc++ -Wno-format-nonliteral -Wno-overlength-strings -Wno-strict-overflow -Wlogical-op -Wnoexcept -Wstrict-null-sentinel -Wno-implicit-fallthrough -march=armv8-a -Wno-ignored-attributes -O0 -g -gdwarf-2 -fstack-protector-strong -D_GLIBCXX_USE_NANOSLEEP -DARM_COMPUTE_CPP_SCHEDULER=1 -DARM_COMPUTE_AARCH64_V8A -DNO_DOT_IN_TOOLCHAIN -DEMBEDDED_KERNELS -DARM_COMPUTE_DEBUG_ENABLED -DARM_COMPUTE_ASSERTS_ENABLED -DARM_COMPUTE_LOGGING_ENABLED -DARM_COMPUTE_CL -Iinclude -I. -I. examples/$1.cpp
+
+
+aarch64-linux-gnu-g++ -o build/examples/$1 -Wl,--allow-shlib-undefined build/examples/$1.o build/utils/Utils.o build/utils/GraphUtils.o -Lbuild -L. -lpthread -larm_compute_graph -larm_compute -larm_compute_core
+
+
+
+LD_LIBRARY_PATH=build ./build/examples/$1
